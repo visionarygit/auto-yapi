@@ -1,0 +1,32 @@
+<idea-plugin>
+    <id>com.oppo.ads.auto-yapi</id>
+    <name>Auto Yapi</name>
+    <vendor email="liutao22@oppo.com">OPPO</vendor>
+
+    <description><![CDATA[easy yapi插件扩展插件，支持自动导出能力]]></description>
+
+    <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.itangcent.idea.plugin.easy-yapi</depends>
+
+    <extensions defaultExtensionNs="com.itangcent.idea.plugin">
+        <!-- Add your extensions here -->
+        <easy-yapi.yapiExporterExecutor/>
+    </extensions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <prePushHandler implementation="com.oppo.ads.extensions.GitPrePushHandler"/>
+        <applicationConfigurable parentId="other"
+                                 instance="com.oppo.ads.configurable.SettingConfigurable"
+                                 id="SettingConfigurable"
+                                 displayName="AutoYapi"/>
+
+        <projectService serviceImplementation="com.oppo.ads.persistent.SettingPersistent"
+                            id="AutoYapi.SettingPersistent"/>
+
+        <applicationService serviceImplementation="com.oppo.ads.service.ScheduleService"/>
+
+        <backgroundPostStartupActivity implementation="com.oppo.ads.service.ScheduleService"/>
+    </extensions>
+</idea-plugin>
