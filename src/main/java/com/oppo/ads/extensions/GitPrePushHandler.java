@@ -61,6 +61,9 @@ public class GitPrePushHandler implements PrePushHandler {
 				Collection<Change> changes = commit.getChanges();
 				for (Change change : changes) {
 					ContentRevision afterRevision = change.getAfterRevision();
+					if (afterRevision == null) {
+						continue;
+					}
 					FilePath file = afterRevision.getFile();
 					FilePath filePath = new LocalFilePath(listenerDir, true);
 					if (file.isUnder(filePath, false)) {
