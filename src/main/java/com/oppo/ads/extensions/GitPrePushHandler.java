@@ -18,6 +18,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Query;
 import com.intellij.vcs.log.VcsFullCommitDetails;
 import com.oppo.ads.persistent.SettingPersistent;
+import com.oppo.ads.utils.FileUtil;
 import com.oppo.ads.utils.ProjectUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -40,6 +41,7 @@ import java.util.List;
 public class GitPrePushHandler implements PrePushHandler {
     private static final Logger LOG = Logger.getInstance(GitPrePushHandler.class);
     private static List<String> referencePaths = new ArrayList<>();
+
     @Nls(capitalization = Nls.Capitalization.Title)
     @NotNull
     @Override
@@ -75,35 +77,22 @@ public class GitPrePushHandler implements PrePushHandler {
                         continue;
                     }
                     FilePath file = afterRevision.getFile();
-                    System.out.println("获取文件路径" + file.getPath());
-                    System.out.println("获取文件名称" + file.getName());
-
                     VirtualFile virtualFile = file.getVirtualFile();
+                    String path = virtualFile.getPath();
+                    if(referencePaths.contains(path)) {
+                        referencePaths.add(path);
+                    }
                     PsiFile psiFile = PsiManager.getInstance(currentProject).findFile(virtualFile);
                     getReferenceClassPath(psiFile);
-
-
-//                    FilePath filePath = new LocalFilePath(listenerDir, true);
-//                    if (file.isUnder(filePath, false)) {
-//                        ifNeedExport = true;
-//                        break OUT;
-//                    }
                 }
             }
         }
 
         List<String> needExportPaths = getNeedExportPaths(listenerDir);
-        export(needExportPaths,currentProject);
-//        if (ifNeedExport) {
-//            String[] split = exportDir.trim().split(",");
-//            for (String s : split) {
-////				YapiExporter.export(currentProject, s);
-//                System.out.println("--------" + s);
-//            }
-//        }
+        export(needExportPaths, currentProject);
+
         return Result.OK;
     }
-
 
 
     void getReferenceClassPath(PsiFile psiFile) {
@@ -128,18 +117,20 @@ public class GitPrePushHandler implements PrePushHandler {
         return;
     }
 
-    List<String> getNeedExportPaths(String listenerDir){
+    List<String> getNeedExportPaths(String listenerDir) {
         List<String> strings = new ArrayList<>();
-        for(String path:referencePaths){
-            if(path.contains(listenerDir)){
+        for (String path : referencePaths) {
+
+            if (FileUtil.ifContains(path,listenerDir)) {
                 strings.add(path);
             }
         }
         return strings;
     }
 
-    void export(List<String> referencePaths,Project currentProject){
-        for(String path:referencePaths){
+    void export(List<String> needExportPaths, Project currentProject) {
+        for (String path : needExportPaths) {
+            System.out.println(path);
             YapiExporter.export(currentProject, path);
         }
     }
