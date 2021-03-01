@@ -79,7 +79,7 @@ public class GitPrePushHandler implements PrePushHandler {
                     FilePath file = afterRevision.getFile();
                     VirtualFile virtualFile = file.getVirtualFile();
                     String path = virtualFile.getPath();
-                    if(referencePaths.contains(path)) {
+                    if(!referencePaths.contains(path)) {
                         referencePaths.add(path);
                     }
                     PsiFile psiFile = PsiManager.getInstance(currentProject).findFile(virtualFile);
