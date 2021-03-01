@@ -33,7 +33,7 @@ import java.util.List;
  **/
 public class GitPrePushHandler implements PrePushHandler {
     private static final Logger LOG = Logger.getInstance(GitPrePushHandler.class);
-    private static List<String> referencePaths = new ArrayList<>();
+//    private static List<String> referencePaths = new ArrayList<>();
 
     @Nls(capitalization = Nls.Capitalization.Title)
     @NotNull
@@ -58,7 +58,7 @@ public class GitPrePushHandler implements PrePushHandler {
             return Result.OK;
         }
 
-
+        List<String> referencePaths = new ArrayList<>();
         for (PushInfo pushInfo : list) {
             List<VcsFullCommitDetails> commits = pushInfo.getCommits();
             for (VcsFullCommitDetails commit : commits) {
@@ -71,23 +71,26 @@ public class GitPrePushHandler implements PrePushHandler {
                     FilePath file = afterRevision.getFile();
                     VirtualFile virtualFile = file.getVirtualFile();
                     String path = virtualFile.getPath();
-                    if(!referencePaths.contains(path)) {
+
+                    if (!referencePaths.contains(path)) {
                         referencePaths.add(path);
                     }
                     PsiFile psiFile = PsiManager.getInstance(currentProject).findFile(virtualFile);
-                    getReferenceClassPath(psiFile);
+                    getReferenceClassPath(psiFile, referencePaths);
                 }
             }
         }
-
-        List<String> needExportPaths = getNeedExportPaths(listenerDir);
+        for(String path:referencePaths){
+            System.out.println(path);
+        }
+        List<String> needExportPaths = getNeedExportPaths(listenerDir, referencePaths);
         export(needExportPaths, currentProject);
 
         return Result.OK;
     }
 
 
-    void getReferenceClassPath(PsiFile psiFile) {
+    void getReferenceClassPath(PsiFile psiFile, List<String> referencePaths) {
         PsiElement child = psiFile.getChildren()[1];
         Query<PsiReference> search = ReferencesSearch.search(child);
         Collection<PsiReference> all = search.findAll();
@@ -103,17 +106,17 @@ public class GitPrePushHandler implements PrePushHandler {
 
                 referencePaths.add(path);
                 /*递归查询*/
-                getReferenceClassPath(containingFile);
+                getReferenceClassPath(containingFile, referencePaths);
             }
         }
         return;
     }
 
-    List<String> getNeedExportPaths(String listenerDir) {
+    List<String> getNeedExportPaths(String listenerDir, List<String> referencePaths) {
         List<String> strings = new ArrayList<>();
         for (String path : referencePaths) {
 
-            if (FileUtil.ifContains(path,listenerDir)) {
+            if (FileUtil.ifContains(path, listenerDir)) {
                 strings.add(path);
             }
         }
