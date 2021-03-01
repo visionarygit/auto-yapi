@@ -33,7 +33,6 @@ import java.util.List;
  **/
 public class GitPrePushHandler implements PrePushHandler {
     private static final Logger LOG = Logger.getInstance(GitPrePushHandler.class);
-//    private static List<String> referencePaths = new ArrayList<>();
 
     @Nls(capitalization = Nls.Capitalization.Title)
     @NotNull
