@@ -16,4 +16,18 @@ public class FileUtil {
 		File file = new File(dir);
 		return file.exists();
 	}
+
+	public static boolean ifContains(String filePath, String directoryPath){
+		String f1 = filePath.replace('/',',');
+		String f2 = f1.replace('\\',',');
+
+		String d1 = directoryPath.replace('/',',');
+		String d2 = d1.replace('\\',',');
+
+		if(f2.contains(d2)){
+			return true;
+		}
+
+		return false;
+	}
 }
