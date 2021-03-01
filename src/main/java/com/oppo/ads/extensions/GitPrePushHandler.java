@@ -6,27 +6,20 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.FilePath;
-import com.intellij.openapi.vcs.LocalFilePath;
 import com.intellij.openapi.vcs.changes.Change;
 import com.intellij.openapi.vcs.changes.ContentRevision;
-import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
-import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.searches.ReferencesSearch;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Query;
 import com.intellij.vcs.log.VcsFullCommitDetails;
 import com.oppo.ads.persistent.SettingPersistent;
 import com.oppo.ads.utils.FileUtil;
 import com.oppo.ads.utils.ProjectUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.io.SAXReader;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,7 +45,6 @@ public class GitPrePushHandler implements PrePushHandler {
     @NotNull
     @Override
     public Result handle(@NotNull List<PushInfo> list, @NotNull ProgressIndicator progressIndicator) {
-        boolean ifNeedExport = false;
         Project currentProject = ProjectUtil.getCurrentProject();
         SettingPersistent settingPersistent = SettingPersistent.getInstance(currentProject);
         if (!settingPersistent.gitPushSwitch) {
@@ -130,7 +122,7 @@ public class GitPrePushHandler implements PrePushHandler {
 
     void export(List<String> needExportPaths, Project currentProject) {
         for (String path : needExportPaths) {
-            System.out.println(path);
+            LOG.info(path);
             YapiExporter.export(currentProject, path);
         }
     }
