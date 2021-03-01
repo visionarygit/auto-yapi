@@ -80,9 +80,6 @@ public class GitPrePushHandler implements PrePushHandler {
                 }
             }
         }
-        for(String path:referencePaths){
-            System.out.println(path);
-        }
         List<String> needExportPaths = getNeedExportPaths(listenerDir, referencePaths);
         export(needExportPaths, currentProject);
 
