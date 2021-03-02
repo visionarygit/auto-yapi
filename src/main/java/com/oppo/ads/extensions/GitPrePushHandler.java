@@ -19,8 +19,6 @@ import com.oppo.ads.utils.ProjectUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -57,7 +55,7 @@ public class GitPrePushHandler implements PrePushHandler {
             return Result.OK;
         }
 
-        List<String> referencePaths = new ArrayList<>();
+        List<PsiFile> referencePsiFile = new ArrayList<>();
         for (PushInfo pushInfo : list) {
             List<VcsFullCommitDetails> commits = pushInfo.getCommits();
             for (VcsFullCommitDetails commit : commits) {
@@ -71,22 +69,22 @@ public class GitPrePushHandler implements PrePushHandler {
                     VirtualFile virtualFile = file.getVirtualFile();
                     String path = virtualFile.getPath();
 
-                    if (!referencePaths.contains(path)) {
-                        referencePaths.add(path);
-                    }
                     PsiFile psiFile = PsiManager.getInstance(currentProject).findFile(virtualFile);
-                    getReferenceClassPath(psiFile, referencePaths);
+                    if (!referencePsiFile.contains(psiFile)) {
+                        referencePsiFile.add(psiFile);
+                    }
+                    getReferencePsiFile(psiFile, referencePsiFile);
                 }
             }
         }
-        List<String> needExportPaths = getNeedExportPaths(listenerDir, referencePaths);
-        export(needExportPaths, currentProject);
+        List<PsiFile> needExportPsiFile = getNeedExportPsiFile(listenerDir, referencePsiFile);
+        export(needExportPsiFile, currentProject);
 
         return Result.OK;
     }
 
 
-    void getReferenceClassPath(PsiFile psiFile, List<String> referencePaths) {
+    void getReferencePsiFile(PsiFile psiFile, List<PsiFile> referencePsiFile) {
         PsiElement child = psiFile.getChildren()[1];
         Query<PsiReference> search = ReferencesSearch.search(child);
         Collection<PsiReference> all = search.findAll();
@@ -96,33 +94,29 @@ public class GitPrePushHandler implements PrePushHandler {
             PsiElement element = psiReference.getElement();
             String text = element.getText();
             PsiFile containingFile = element.getContainingFile();
-            String path = containingFile.getVirtualFile().getPath();
-
-            if (!referencePaths.contains(path)) {
-
-                referencePaths.add(path);
+            if (!referencePsiFile.contains(containingFile)) {
+                referencePsiFile.add(containingFile);
                 /*递归查询*/
-                getReferenceClassPath(containingFile, referencePaths);
+                getReferencePsiFile(containingFile, referencePsiFile);
             }
         }
         return;
     }
 
-    List<String> getNeedExportPaths(String listenerDir, List<String> referencePaths) {
-        List<String> strings = new ArrayList<>();
-        for (String path : referencePaths) {
-
+    List<PsiFile> getNeedExportPsiFile(String listenerDir, List<PsiFile> referencePsiFile) {
+        List<PsiFile> psiFiles = new ArrayList<>();
+        for (PsiFile psiFile : referencePsiFile) {
+            String path = psiFile.getVirtualFile().getPath();
             if (FileUtil.ifContains(path, listenerDir)) {
-                strings.add(path);
+                psiFiles.add(psiFile);
             }
         }
-        return strings;
+        return psiFiles;
     }
 
-    void export(List<String> needExportPaths, Project currentProject) {
-        for (String path : needExportPaths) {
-            LOG.info(path);
-            YapiExporter.export(currentProject, path);
+    void export(List<PsiFile> needExportPsiFiles, Project currentProject) {
+        for (PsiFile psiFile : needExportPsiFiles) {
+            YapiExporter.exportByPsiFile(currentProject, psiFile);
         }
     }
 

@@ -2,12 +2,14 @@ package com.oppo.ads.extensions;
 
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiFile;
 import com.itangcent.idea.extensionPoint.YapiExporterExtensionPoint;
 import com.oppo.ads.utils.NotificationUtil;
 
 
 /**
- * yapi导出扩展点
+ *
  *
  * @author 80275131
  * @version 1.0
@@ -24,6 +26,16 @@ public class YapiExporter {
 		for (YapiExporterExtensionPoint extension : extensions) {
 			if (extension != null) {
 				extension.doExport(project, path);
+			}
+		}
+		NotificationUtil.notifyInfo("Auto Yapi", "自动导出完成");
+	}
+
+	public static void exportByPsiFile(Project project, PsiFile psiFile) {
+		YapiExporterExtensionPoint[] extensions = EP_NAME.getExtensions();
+		for (YapiExporterExtensionPoint extension : extensions) {
+			if (extension != null) {
+				extension.doExportByPsiFile(project,psiFile);
 			}
 		}
 		NotificationUtil.notifyInfo("Auto Yapi", "自动导出完成");
