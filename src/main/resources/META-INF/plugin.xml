@@ -4,6 +4,7 @@
     <vendor email="liutao22@oppo.com">OPPO</vendor>
 
     <description><![CDATA[easy yapi插件扩展插件，支持自动导出能力]]></description>
+    <idea-version since-build="183.0"/>
 
     <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
