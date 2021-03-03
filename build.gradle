@@ -19,6 +19,7 @@ dependencies {
 intellij {
     version '2020.2'
     sandboxDirectory 'idea-sandbox'
+    plugins = ['com.intellij.java']
 }
 patchPluginXml {
     changeNotes """
