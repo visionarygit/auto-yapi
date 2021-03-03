@@ -20,9 +20,9 @@ intellij {
     version '2020.2'
     sandboxDirectory 'idea-sandbox'
     plugins = ['com.intellij.java']
+    updateSinceUntilBuild false
 }
 patchPluginXml {
-    changeNotes """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
+    pluginDescription(file(descriptionFile).text)
+    changeNotes(file(changesFile).text)
 }
