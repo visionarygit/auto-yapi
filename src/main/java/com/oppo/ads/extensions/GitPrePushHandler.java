@@ -11,6 +11,7 @@ import com.intellij.openapi.vcs.changes.ContentRevision;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.search.searches.ReferencesSearch;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Query;
 import com.intellij.vcs.log.VcsFullCommitDetails;
 import com.oppo.ads.persistent.SettingPersistent;
@@ -19,6 +20,7 @@ import com.oppo.ads.utils.ProjectUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -85,7 +87,7 @@ public class GitPrePushHandler implements PrePushHandler {
 
 
     void getReferencePsiFile(PsiFile psiFile, List<PsiFile> referencePsiFile) {
-        PsiElement child = psiFile.getChildren()[1];
+        PsiElement child = PsiTreeUtil.findChildOfType(psiFile, PsiClass.class);
         Query<PsiReference> search = ReferencesSearch.search(child);
         Collection<PsiReference> all = search.findAll();
 
