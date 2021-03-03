@@ -3,6 +3,7 @@ package com.oppo.ads.extensions;
 import com.intellij.dvcs.push.PrePushHandler;
 import com.intellij.dvcs.push.PushInfo;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.FilePath;
@@ -11,9 +12,11 @@ import com.intellij.openapi.vcs.changes.ContentRevision;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.search.searches.ReferencesSearch;
+import com.intellij.psi.util.PsiClassUtil;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Query;
 import com.intellij.vcs.log.VcsFullCommitDetails;
+import com.itangcent.intellij.psi.PsiClassUtils;
 import com.oppo.ads.persistent.SettingPersistent;
 import com.oppo.ads.utils.FileUtil;
 import com.oppo.ads.utils.ProjectUtil;
@@ -110,7 +113,9 @@ public class GitPrePushHandler implements PrePushHandler {
         for (PsiFile psiFile : referencePsiFile) {
             String path = psiFile.getVirtualFile().getPath();
             if (FileUtil.ifContains(path, listenerDir)) {
-                psiFiles.add(psiFile);
+                if (isInterface(psiFile)) {
+                    psiFiles.add(psiFile);
+                }
             }
         }
         return psiFiles;
@@ -120,6 +125,15 @@ public class GitPrePushHandler implements PrePushHandler {
         for (PsiFile psiFile : needExportPsiFiles) {
             YapiExporter.exportByPsiFile(currentProject, psiFile);
         }
+    }
+
+
+    boolean isInterface(PsiFile psiFile) {
+        PsiClass aClass = PsiTreeUtil.findChildOfType(psiFile, PsiClass.class);
+        if (aClass.isInterface()) {
+            return true;
+        }
+        return false;
     }
 
 }
