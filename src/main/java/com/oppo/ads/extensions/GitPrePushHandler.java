@@ -113,7 +113,7 @@ public class GitPrePushHandler implements PrePushHandler {
         for (PsiFile psiFile : referencePsiFile) {
             String path = psiFile.getVirtualFile().getPath();
             if (FileUtil.ifContains(path, listenerDir)) {
-                if (containPsiKeyword_Interface(psiFile)) {
+                if (isInterface(psiFile)) {
                     psiFiles.add(psiFile);
                 }
             }
@@ -128,7 +128,7 @@ public class GitPrePushHandler implements PrePushHandler {
     }
 
 
-    boolean containPsiKeyword_Interface(PsiFile psiFile) {
+    boolean isInterface(PsiFile psiFile) {
         PsiClass aClass = PsiTreeUtil.findChildOfType(psiFile, PsiClass.class);
         if (aClass.isInterface()) {
             return true;
