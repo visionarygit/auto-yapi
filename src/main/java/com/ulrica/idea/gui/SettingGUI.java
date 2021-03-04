@@ -1,8 +1,8 @@
-package com.oppo.ads.gui;
+package com.ulrica.idea.gui;
 
-import com.oppo.ads.verifier.DirInputVerifier;
-import com.oppo.ads.verifier.NumbericInputVerifier;
-import com.oppo.ads.verifier.TimestampInputVerifier;
+import com.ulrica.idea.verifier.DirInputVerifier;
+import com.ulrica.idea.verifier.NumbericInputVerifier;
+import com.ulrica.idea.verifier.TimestampInputVerifier;
 
 import javax.swing.*;
 

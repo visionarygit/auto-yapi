@@ -1,11 +1,10 @@
-package com.oppo.ads.extensions;
+package com.ulrica.idea.extensions;
 
 import com.intellij.openapi.extensions.ExtensionPointName;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.itangcent.idea.extensionPoint.YapiExporterExtensionPoint;
-import com.oppo.ads.utils.NotificationUtil;
+import com.ulrica.idea.utils.NotificationUtil;
 
 
 /**

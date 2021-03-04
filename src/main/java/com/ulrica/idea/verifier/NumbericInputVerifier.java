@@ -1,4 +1,4 @@
-package com.oppo.ads.verifier;
+package com.ulrica.idea.verifier;
 
 import org.apache.commons.lang.math.NumberUtils;
 

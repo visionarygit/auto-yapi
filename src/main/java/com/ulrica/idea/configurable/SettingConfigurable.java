@@ -1,13 +1,13 @@
-package com.oppo.ads.configurable;
+package com.ulrica.idea.configurable;
 
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.NlsContexts;
-import com.oppo.ads.gui.SettingGUI;
-import com.oppo.ads.persistent.SettingPersistent;
-import com.oppo.ads.utils.ProjectUtil;
-import com.oppo.ads.utils.ScheduleUtil;
+import com.ulrica.idea.gui.SettingGUI;
+import com.ulrica.idea.persistent.SettingPersistent;
+import com.ulrica.idea.utils.ProjectUtil;
+import com.ulrica.idea.utils.ScheduleUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

@@ -1,6 +1,6 @@
-package com.oppo.ads.verifier;
+package com.ulrica.idea.verifier;
 
-import com.oppo.ads.utils.TimestampUtil;
+import com.ulrica.idea.utils.TimestampUtil;
 
 import javax.swing.text.JTextComponent;
 

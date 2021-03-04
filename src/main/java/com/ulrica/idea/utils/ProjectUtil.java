@@ -1,4 +1,4 @@
-package com.oppo.ads.utils;
+package com.ulrica.idea.utils;
 
 import com.intellij.ide.DataManager;
 import com.intellij.openapi.actionSystem.CommonDataKeys;

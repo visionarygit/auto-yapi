@@ -1,12 +1,12 @@
-package com.oppo.ads.service;
+package com.ulrica.idea.service;
 
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupActivity;
-import com.oppo.ads.extensions.GitPrePushHandler;
-import com.oppo.ads.utils.ScheduleUtil;
+import com.ulrica.idea.extensions.GitPrePushHandler;
+import com.ulrica.idea.utils.ScheduleUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

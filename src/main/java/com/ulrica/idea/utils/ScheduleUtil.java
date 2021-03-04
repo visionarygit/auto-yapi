@@ -1,10 +1,10 @@
-package com.oppo.ads.utils;
+package com.ulrica.idea.utils;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
-import com.oppo.ads.extensions.YapiExporter;
-import com.oppo.ads.persistent.SettingPersistent;
-import com.oppo.ads.service.ScheduleService;
+import com.ulrica.idea.extensions.YapiExporter;
+import com.ulrica.idea.persistent.SettingPersistent;
+import com.ulrica.idea.service.ScheduleService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 

@@ -1,4 +1,4 @@
-package com.oppo.ads.extensions;
+package com.ulrica.idea.extensions;
 
 import com.intellij.dvcs.push.PrePushHandler;
 import com.intellij.dvcs.push.PushInfo;
@@ -14,9 +14,9 @@ import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Query;
 import com.intellij.vcs.log.VcsFullCommitDetails;
-import com.oppo.ads.persistent.SettingPersistent;
-import com.oppo.ads.utils.FileUtil;
-import com.oppo.ads.utils.ProjectUtil;
+import com.ulrica.idea.persistent.SettingPersistent;
+import com.ulrica.idea.utils.FileUtil;
+import com.ulrica.idea.utils.ProjectUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;

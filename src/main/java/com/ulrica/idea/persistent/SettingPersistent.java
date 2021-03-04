@@ -1,4 +1,4 @@
-package com.oppo.ads.persistent;
+package com.ulrica.idea.persistent;
 
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;

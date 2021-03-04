@@ -1,7 +1,7 @@
 <idea-plugin>
-    <id>com.oppo.ads.auto-yapi</id>
+    <id>com.ulrica.idea.auto-yapi</id>
     <name>Auto Yapi</name>
-    <vendor email="liutao22@oppo.com">OPPO</vendor>
+    <vendor email="1969971457@qq.com">Ulrica</vendor>
 
     <description><![CDATA[easy yapi插件扩展插件，支持自动导出能力]]></description>
     <idea-version since-build="183.0"/>
@@ -17,17 +17,17 @@
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <prePushHandler implementation="com.oppo.ads.extensions.GitPrePushHandler"/>
+        <prePushHandler implementation="com.ulrica.idea.extensions.GitPrePushHandler"/>
         <applicationConfigurable parentId="other"
-                                 instance="com.oppo.ads.configurable.SettingConfigurable"
+                                 instance="com.ulrica.idea.configurable.SettingConfigurable"
                                  id="SettingConfigurable"
                                  displayName="AutoYapi"/>
 
-        <projectService serviceImplementation="com.oppo.ads.persistent.SettingPersistent"
+        <projectService serviceImplementation="com.ulrica.idea.persistent.SettingPersistent"
                             id="AutoYapi.SettingPersistent"/>
 
-        <applicationService serviceImplementation="com.oppo.ads.service.ScheduleService"/>
+        <applicationService serviceImplementation="com.ulrica.idea.service.ScheduleService"/>
 
-        <backgroundPostStartupActivity implementation="com.oppo.ads.service.ScheduleService"/>
+        <backgroundPostStartupActivity implementation="com.ulrica.idea.service.ScheduleService"/>
     </extensions>
 </idea-plugin>

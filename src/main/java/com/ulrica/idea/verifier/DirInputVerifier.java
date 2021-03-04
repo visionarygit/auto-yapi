@@ -1,6 +1,6 @@
-package com.oppo.ads.verifier;
+package com.ulrica.idea.verifier;
 
-import com.oppo.ads.utils.FileUtil;
+import com.ulrica.idea.utils.FileUtil;
 
 import javax.swing.text.JTextComponent;
 import java.util.stream.Stream;

@@ -3,7 +3,7 @@ plugins {
     id 'org.jetbrains.intellij' version '0.6.5'
 }
 
-group 'com.oppo.ads'
+group 'com.ulrica.idea'
 version '1.0-SNAPSHOT'
 
 repositories {

@@ -1,4 +1,4 @@
-package com.oppo.ads.utils;
+package com.ulrica.idea.utils;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
