@@ -6,6 +6,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vcs.FilePath;
+import com.intellij.openapi.vcs.LocalFilePath;
 import com.intellij.openapi.vcs.changes.Change;
 import com.intellij.openapi.vcs.changes.ContentRevision;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -69,6 +70,7 @@ public class GitPrePushHandler implements PrePushHandler {
                     }
                     FilePath file = afterRevision.getFile();
                     VirtualFile virtualFile = file.getVirtualFile();
+                    String path = virtualFile.getPath();
 
                     PsiFile psiFile = PsiManager.getInstance(currentProject).findFile(virtualFile);
                     if (!referencePsiFile.contains(psiFile)) {
@@ -79,7 +81,7 @@ public class GitPrePushHandler implements PrePushHandler {
             }
         }
         List<PsiFile> needExportPsiFile = getNeedExportPsiFile(listenerDir, referencePsiFile);
-        export(needExportPsiFile, currentProject);
+        exportAll(needExportPsiFile, currentProject);
 
         return Result.OK;
     }
@@ -93,6 +95,7 @@ public class GitPrePushHandler implements PrePushHandler {
         for (PsiReference psiReference : all) {
             /*使用api：psiReference.getElement()*/
             PsiElement element = psiReference.getElement();
+            String text = element.getText();
             PsiFile containingFile = element.getContainingFile();
             if (!referencePsiFile.contains(containingFile)) {
                 referencePsiFile.add(containingFile);
@@ -116,13 +119,6 @@ public class GitPrePushHandler implements PrePushHandler {
         return psiFiles;
     }
 
-    void export(List<PsiFile> needExportPsiFiles, Project currentProject) {
-        for (PsiFile psiFile : needExportPsiFiles) {
-            YapiExporter.exportByPsiFile(currentProject, psiFile);
-        }
-    }
-
-
     boolean isInterface(PsiFile psiFile) {
         PsiClass aClass = PsiTreeUtil.findChildOfType(psiFile, PsiClass.class);
         if (aClass.isInterface()) {
@@ -131,4 +127,7 @@ public class GitPrePushHandler implements PrePushHandler {
         return false;
     }
 
+    void exportAll(List<PsiFile> needExportPsiFiles, Project currentProject){
+        YapiExporter.exportByPsiFiles(currentProject, needExportPsiFiles);
+    }
 }
