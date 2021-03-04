@@ -6,6 +6,8 @@ import com.intellij.psi.PsiFile;
 import com.itangcent.idea.extensionPoint.YapiExporterExtensionPoint;
 import com.ulrica.idea.utils.NotificationUtil;
 
+import java.util.List;
+
 
 /**
  *
@@ -34,10 +36,19 @@ public class YapiExporter {
 		YapiExporterExtensionPoint[] extensions = EP_NAME.getExtensions();
 		for (YapiExporterExtensionPoint extension : extensions) {
 			if (extension != null) {
-				extension.doExportByPsiFile(project,psiFile);
+				extension.doExportByPsiFile(project, psiFile);
 			}
 		}
 		NotificationUtil.notifyInfo("Auto Yapi", "自动导出完成");
 	}
 
+	public static void exportByPsiFiles(Project currentProject, List<PsiFile> needExportPsiFiles) {
+		YapiExporterExtensionPoint[] extensions = EP_NAME.getExtensions();
+		for (YapiExporterExtensionPoint extension : extensions) {
+			if (extension != null) {
+				extension.doExportByPsiFiles(currentProject, needExportPsiFiles);
+			}
+		}
+		NotificationUtil.notifyInfo("Auto Yapi", "自动导出完成");
+	}
 }
