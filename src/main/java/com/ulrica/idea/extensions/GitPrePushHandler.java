@@ -9,8 +9,11 @@ import com.intellij.openapi.vcs.FilePath;
 import com.intellij.openapi.vcs.LocalFilePath;
 import com.intellij.openapi.vcs.changes.Change;
 import com.intellij.openapi.vcs.changes.ContentRevision;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.GlobalSearchScopes;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Query;
@@ -52,6 +55,9 @@ public class GitPrePushHandler implements PrePushHandler {
             return Result.OK;
         }
         String listenerDir = settingPersistent.listenDirs;
+        VirtualFile fileByPath = LocalFileSystem.getInstance().findFileByPath(listenerDir);
+        PsiDirectory directory = PsiManager.getInstance(currentProject).findDirectory(fileByPath);
+        GlobalSearchScope globalSearchScope = GlobalSearchScopes.directoryScope(directory, true);
         String exportDir = settingPersistent.exportDirs;
         if (StringUtils.isAnyBlank(listenerDir, exportDir)) {
             LOG.info("auto api listenDirs or exportDirs not config");
@@ -76,7 +82,7 @@ public class GitPrePushHandler implements PrePushHandler {
                     if (!referencePsiFile.contains(psiFile)) {
                         referencePsiFile.add(psiFile);
                     }
-                    getReferencePsiFile(psiFile, referencePsiFile);
+                    getReferencePsiFile(psiFile, referencePsiFile,globalSearchScope);
                 }
             }
         }
@@ -87,9 +93,9 @@ public class GitPrePushHandler implements PrePushHandler {
     }
 
 
-    void getReferencePsiFile(PsiFile psiFile, List<PsiFile> referencePsiFile) {
+    void getReferencePsiFile(PsiFile psiFile, List<PsiFile> referencePsiFile,GlobalSearchScope globalSearchScope) {
         PsiElement child = PsiTreeUtil.findChildOfType(psiFile, PsiClass.class);
-        Query<PsiReference> search = ReferencesSearch.search(child);
+        Query<PsiReference> search = ReferencesSearch.search(child,globalSearchScope);
         Collection<PsiReference> all = search.findAll();
 
         for (PsiReference psiReference : all) {
@@ -100,7 +106,7 @@ public class GitPrePushHandler implements PrePushHandler {
             if (!referencePsiFile.contains(containingFile)) {
                 referencePsiFile.add(containingFile);
                 /*递归查询*/
-                getReferencePsiFile(containingFile, referencePsiFile);
+                getReferencePsiFile(containingFile, referencePsiFile,globalSearchScope);
             }
         }
         return;
