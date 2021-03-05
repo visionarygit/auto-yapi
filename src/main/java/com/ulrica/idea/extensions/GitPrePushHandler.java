@@ -2,6 +2,9 @@ package com.ulrica.idea.extensions;
 
 import com.intellij.dvcs.push.PrePushHandler;
 import com.intellij.dvcs.push.PushInfo;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
@@ -82,20 +85,21 @@ public class GitPrePushHandler implements PrePushHandler {
                     if (!referencePsiFile.contains(psiFile)) {
                         referencePsiFile.add(psiFile);
                     }
-                    getReferencePsiFile(psiFile, referencePsiFile,globalSearchScope);
+                    getReferencePsiFile(psiFile, referencePsiFile, globalSearchScope);
                 }
             }
         }
-        List<PsiFile> needExportPsiFile = getNeedExportPsiFile(listenerDir, referencePsiFile);
-        exportAll(needExportPsiFile, currentProject);
+        StringBuffer allExportClasses = new StringBuffer();
+        List<PsiFile> needExportPsiFile = getNeedExportPsiFile(listenerDir, referencePsiFile, allExportClasses);
+        exportAll(needExportPsiFile, currentProject, allExportClasses.toString());
 
         return Result.OK;
     }
 
 
-    void getReferencePsiFile(PsiFile psiFile, List<PsiFile> referencePsiFile,GlobalSearchScope globalSearchScope) {
+    void getReferencePsiFile(PsiFile psiFile, List<PsiFile> referencePsiFile, GlobalSearchScope globalSearchScope) {
         PsiElement child = PsiTreeUtil.findChildOfType(psiFile, PsiClass.class);
-        Query<PsiReference> search = ReferencesSearch.search(child,globalSearchScope);
+        Query<PsiReference> search = ReferencesSearch.search(child, globalSearchScope);
         Collection<PsiReference> all = search.findAll();
 
         for (PsiReference psiReference : all) {
@@ -106,19 +110,20 @@ public class GitPrePushHandler implements PrePushHandler {
             if (!referencePsiFile.contains(containingFile)) {
                 referencePsiFile.add(containingFile);
                 /*递归查询*/
-                getReferencePsiFile(containingFile, referencePsiFile,globalSearchScope);
+                getReferencePsiFile(containingFile, referencePsiFile, globalSearchScope);
             }
         }
         return;
     }
 
-    List<PsiFile> getNeedExportPsiFile(String listenerDir, List<PsiFile> referencePsiFile) {
+    List<PsiFile> getNeedExportPsiFile(String listenerDir, List<PsiFile> referencePsiFile, StringBuffer sb) {
         List<PsiFile> psiFiles = new ArrayList<>();
         for (PsiFile psiFile : referencePsiFile) {
             String path = psiFile.getVirtualFile().getPath();
             if (FileUtil.ifContains(path, listenerDir)) {
                 if (isInterface(psiFile)) {
                     psiFiles.add(psiFile);
+                    sb.append(psiFile.getName() + "<br/>");
                 }
             }
         }
@@ -133,7 +138,9 @@ public class GitPrePushHandler implements PrePushHandler {
         return false;
     }
 
-    void exportAll(List<PsiFile> needExportPsiFiles, Project currentProject){
+    void exportAll(List<PsiFile> needExportPsiFiles, Project currentProject,String content) {
         YapiExporter.exportByPsiFiles(currentProject, needExportPsiFiles);
+        Notification notification = new Notification("groupId", "以下接口导出成功", content, NotificationType.INFORMATION);
+        Notifications.Bus.notify(notification);
     }
 }
