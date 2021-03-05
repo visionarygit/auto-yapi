@@ -102,7 +102,7 @@ public class GitPrePushHandler implements PrePushHandler {
 		List<PsiClass> psiClasses = referencePsiFile
 				.stream()
 				.filter(ref -> {
-					String path = ref.getContainingFile().getVirtualFile().getPath();
+					String path = ReadAction.compute(() -> ref.getContainingFile().getVirtualFile().getPath());
 					FilePath refFilePath = new LocalFilePath(path, false);
 					return Stream.of(exportDirs).anyMatch(dir -> refFilePath.isUnder(new LocalFilePath(dir, false), false));
 				})
