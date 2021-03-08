@@ -109,8 +109,9 @@ public class GitPrePushHandler implements PrePushHandler {
 				.filter(PsiClass::isInterface)
 				.collect(Collectors.toList());
 		//批量导出
-		YapiExporter.exportByPsiFiles(currentProject, psiClasses);
-
+		if (psiClasses.size() > 0) {
+			YapiExporter.exportByPsiFiles(currentProject, psiClasses);
+		}
 		return Result.OK;
 	}
 
