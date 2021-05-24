@@ -1,5 +1,6 @@
 package com.ulrica.idea.configurable;
 
+import com.esotericsoftware.minlog.Log;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
@@ -56,19 +57,45 @@ public class SettingConfigurable implements SearchableConfigurable {
 		return modified;
 	}
 
-	@Override
-	public void apply() throws ConfigurationException {
-		Project currentProject = ProjectUtil.getCurrentProject();
-		SettingPersistent settingPersistent = SettingPersistent.getInstance(currentProject);
-		settingPersistent.listenDirs = settingGUI.getListenDirs();
-		settingPersistent.exportDirs = settingGUI.getExportDirs();
-		settingPersistent.schedulePushSwitch = settingGUI.getSchedulePushSwitch();
-		settingPersistent.gitPushSwitch = settingGUI.getGitPushSwitch();
-		settingPersistent.firstTime = settingGUI.getFirstTime();
-		settingPersistent.intervalTime = settingGUI.getIntervalTime();
-		//配置定时推送任务
-		ScheduleUtil.configSchedule(currentProject);
-	}
+//	@Override
+//	public void apply() throws ConfigurationException {
+//		Project currentProject = ProjectUtil.getCurrentProject();
+//		SettingPersistent settingPersistent = SettingPersistent.getInstance(currentProject);
+//		settingPersistent.listenDirs = settingGUI.getListenDirs();
+//		settingPersistent.exportDirs = settingGUI.getExportDirs();
+//		settingPersistent.schedulePushSwitch = settingGUI.getSchedulePushSwitch();
+//		settingPersistent.gitPushSwitch = settingGUI.getGitPushSwitch();
+//		settingPersistent.firstTime = settingGUI.getFirstTime();
+//		settingPersistent.intervalTime = settingGUI.getIntervalTime();
+//		//配置定时推送任务
+//		ScheduleUtil.configSchedule(currentProject);
+//	}
+
+    @Override
+    public void apply() throws ConfigurationException {
+        Project currentProject = ProjectUtil.getCurrentProject();
+        SettingPersistent settingPersistent = SettingPersistent.getInstance(currentProject);
+        try {
+            PropertiesDetail properties = PropertiesConfigurable.readProperties();
+            assert properties != null;
+            settingPersistent.listenDirs = properties.getListenDirs();
+            settingPersistent.exportDirs = properties.getExportDirs();
+            settingPersistent.schedulePushSwitch = properties.isSchedulePushSwitch();
+            settingPersistent.gitPushSwitch = properties.isGitPushSwitch();
+            settingPersistent.firstTime = properties.getFirstTime();
+            settingPersistent.intervalTime = properties.getIntervalTime();
+        }catch (Exception e){
+            Log.info("配置文件读取错误，从gui中读取");
+            settingPersistent.listenDirs = settingGUI.getListenDirs();
+            settingPersistent.exportDirs = settingGUI.getExportDirs();
+            settingPersistent.schedulePushSwitch = settingGUI.getSchedulePushSwitch();
+            settingPersistent.gitPushSwitch = settingGUI.getGitPushSwitch();
+            settingPersistent.firstTime = settingGUI.getFirstTime();
+            settingPersistent.intervalTime = settingGUI.getIntervalTime();
+        }
+        //配置定时推送任务
+        ScheduleUtil.configSchedule(currentProject);
+    }
 
 	@Override
 	public void reset() {
