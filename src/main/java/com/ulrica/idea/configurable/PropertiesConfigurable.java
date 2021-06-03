@@ -5,16 +5,14 @@ import com.intellij.openapi.project.Project;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.InputStream;
 import java.util.Properties;
-import java.util.ResourceBundle;
 
 public class PropertiesConfigurable {
 
     public static PropertiesDetail readProperties(Project currentProject) {
         try {
             String basePath = currentProject.getBasePath();
-            basePath += "/yapi_setting.properties";
+            basePath += "/.yapi.config";
             Log.info("getBasePath: " + basePath);
             Properties properties = new Properties();
             // 使用InPutStream流读取properties文件
