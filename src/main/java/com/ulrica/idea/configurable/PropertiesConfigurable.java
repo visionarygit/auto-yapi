@@ -5,18 +5,20 @@ import com.intellij.openapi.project.Project;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.Properties;
 
 public class PropertiesConfigurable {
 
-    public static PropertiesDetail readProperties(Project currentProject) {
+    public static PropertiesDetail readProperties(Project currentProject){
+        BufferedReader bufferedReader = null;
         try {
             String basePath = currentProject.getBasePath();
             basePath += "/.yapi.config";
             Log.info("getBasePath: " + basePath);
             Properties properties = new Properties();
             // 使用InPutStream流读取properties文件
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(basePath));
+            bufferedReader = new BufferedReader(new FileReader(basePath));
             properties.load(bufferedReader);
             PropertiesDetail propertiesDetail = new PropertiesDetail();
             try {
@@ -35,6 +37,15 @@ public class PropertiesConfigurable {
             e.printStackTrace();
             Log.info("文件未找到!");
             return null;
+        }finally {
+            if(bufferedReader != null){
+                try{
+                    bufferedReader.close();
+                }catch (IOException e){
+                    Log.info("bufferedReader close IOException:" + e.getMessage());
+                }
+            }
+
         }
     }
 
