@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.NlsContexts;
 import com.ulrica.idea.gui.SettingGUI;
 import com.ulrica.idea.persistent.SettingPersistent;
+import com.ulrica.idea.service.ScheduleService;
 import com.ulrica.idea.utils.ProjectUtil;
 import com.ulrica.idea.utils.ScheduleUtil;
 import org.jetbrains.annotations.NotNull;
@@ -56,6 +57,10 @@ public class SettingConfigurable implements SearchableConfigurable {
 		return modified;
 	}
 
+	/**
+     idea配置优先于配置文件
+     点击apply后，如果发现时间监听开关打开，则关闭文件监听器
+     */
 	@Override
 	public void apply() throws ConfigurationException {
 		Project currentProject = ProjectUtil.getCurrentProject();
@@ -67,6 +72,7 @@ public class SettingConfigurable implements SearchableConfigurable {
 		settingPersistent.firstTime = settingGUI.getFirstTime();
 		settingPersistent.intervalTime = settingGUI.getIntervalTime();
 		//配置定时推送任务
+        ScheduleService.if_idea_has_config = true;
 		ScheduleUtil.configSchedule(currentProject);
 	}
 
