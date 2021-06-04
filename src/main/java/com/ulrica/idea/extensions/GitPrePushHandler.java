@@ -52,7 +52,7 @@ public class GitPrePushHandler implements PrePushHandler {
 
     private SettingPersistent getSettingPersistent(Project currentProject) {
         SettingPersistent instance = SettingPersistent.getInstance(currentProject);
-        if (!instance.gitPushSwitch && !instance.schedulePushSwitch) {
+        if (!instance.gitPushSwitch) {
             LOG.info("idea配置信息为空，将从配置文件中读取！");
             return null;
         }
@@ -77,8 +77,9 @@ public class GitPrePushHandler implements PrePushHandler {
     public Result handle(@NotNull List<PushInfo> list, @NotNull ProgressIndicator progressIndicator) {
         Project currentProject = ProjectUtil.getCurrentProject();
         Pair<String, String> stringPair;
-        if (getSettingPersistent(currentProject) != null) {
-            stringPair = getDirs(Objects.requireNonNull(getSettingPersistent(currentProject)));
+        SettingPersistent persistent = getSettingPersistent(currentProject);
+        if (persistent != null) {
+            stringPair = getDirs(Objects.requireNonNull(persistent));
         } else {
             stringPair = getDirs(Objects.requireNonNull(PropertiesConfigurable.readProperties(currentProject)));
         }
