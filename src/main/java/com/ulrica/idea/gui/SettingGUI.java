@@ -1,5 +1,7 @@
 package com.ulrica.idea.gui;
 
+import com.intellij.openapi.project.Project;
+import com.ulrica.idea.utils.ProjectUtil;
 import com.ulrica.idea.verifier.DirInputVerifier;
 import com.ulrica.idea.verifier.NumbericInputVerifier;
 import com.ulrica.idea.verifier.TimestampInputVerifier;
@@ -37,17 +39,21 @@ public class SettingGUI {
 		return rootPanel;
 	}
 
-	public String getListenDirs() {
-		return listenDirs.getText();
-	}
+    public String getListenDirs() {
+        Project currentProject = ProjectUtil.getCurrentProject();
+        String basePath = currentProject.getBasePath();
+        return basePath + "/" + listenDirs;
+    }
 
 	public void setListenDirs(String listenDirs) {
 		this.listenDirs.setText(listenDirs);
 	}
 
-	public String getExportDirs() {
-		return exportDirs.getText();
-	}
+    public String getExportDirs() {
+        Project currentProject = ProjectUtil.getCurrentProject();
+        String basePath = currentProject.getBasePath();
+        return basePath + "/" + exportDirs;
+    }
 
 	public void setExportDirs(String exportDirs) {
 		this.exportDirs.setText(exportDirs);

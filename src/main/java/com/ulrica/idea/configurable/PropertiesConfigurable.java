@@ -16,18 +16,9 @@ public class PropertiesConfigurable {
             String basePath = currentProject.getBasePath();
             basePath += "/.yapi.config";
             Log.info("getBasePath: " + basePath);
-            Properties properties = new Properties();
             // 使用InPutStream流读取properties文件
             bufferedReader = new BufferedReader(new FileReader(basePath));
-            properties.load(bufferedReader);
-            PropertiesDetail propertiesDetail = new PropertiesDetail();
-            propertiesDetail.setExportDirs(properties.getProperty("exportDirs"));
-            propertiesDetail.setListenDirs(properties.getProperty("listenDirs"));
-            propertiesDetail.setSchedulePushSwitch(convertStringToBoolean(properties.getProperty("schedulePushSwitch")));
-            propertiesDetail.setGitPushSwitch(convertStringToBoolean(properties.getProperty("gitPushSwitch")));
-            propertiesDetail.setFirstTime(properties.getProperty("firstTime"));
-            propertiesDetail.setIntervalTime(properties.getProperty("intervalTime"));
-            return propertiesDetail;
+            return getPropertiesDetail(bufferedReader);
         } catch (Exception e) {
             e.printStackTrace();
             Log.info("配置文件读取错误");
@@ -42,6 +33,43 @@ public class PropertiesConfigurable {
             }
 
         }
+    }
+
+    public static PropertiesDetail readPropertiesByAbsolutePath(String basePath) {
+        BufferedReader bufferedReader = null;
+        try {
+            Log.info("getBasePath: " + basePath);
+            // 使用InPutStream流读取properties文件
+            bufferedReader = new BufferedReader(new FileReader(basePath));
+            return getPropertiesDetail(bufferedReader);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.info("配置文件读取错误");
+            return null;
+        } finally {
+            if (bufferedReader != null) {
+                try {
+                    bufferedReader.close();
+                } catch (IOException e) {
+                    Log.info("bufferedReader close IOException:" + e.getMessage());
+                }
+            }
+
+        }
+    }
+
+    private static PropertiesDetail getPropertiesDetail(BufferedReader bufferedReader) throws Exception {
+        Properties properties = new Properties();
+        // 使用InPutStream流读取properties文件
+        properties.load(bufferedReader);
+        PropertiesDetail propertiesDetail = new PropertiesDetail();
+        propertiesDetail.setExportDirs(properties.getProperty("exportDirs"));
+        propertiesDetail.setListenDirs(properties.getProperty("listenDirs"));
+        propertiesDetail.setSchedulePushSwitch(convertStringToBoolean(properties.getProperty("schedulePushSwitch")));
+        propertiesDetail.setGitPushSwitch(convertStringToBoolean(properties.getProperty("gitPushSwitch")));
+        propertiesDetail.setFirstTime(properties.getProperty("firstTime"));
+        propertiesDetail.setIntervalTime(properties.getProperty("intervalTime"));
+        return propertiesDetail;
     }
 
     private static Boolean convertStringToBoolean(String str) throws Exception {

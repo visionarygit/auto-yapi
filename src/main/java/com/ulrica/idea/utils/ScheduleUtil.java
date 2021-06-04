@@ -2,6 +2,7 @@ package com.ulrica.idea.utils;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import com.ulrica.idea.configurable.PropertiesDetail;
 import com.ulrica.idea.extensions.YapiExporter;
 import com.ulrica.idea.persistent.SettingPersistent;
 import com.ulrica.idea.service.ScheduleService;
@@ -54,4 +55,34 @@ public class ScheduleUtil {
 		LOG.info("schedule config.....delayTime: " + delayTime + ",intervalTime:" + intervalTime);
 		NotificationUtil.notifyInfo("AutoYapi", "定时导出将在" + delayTime + "ms 后开始执行," + intervalTime + "ms 执行一次");
 	}
+
+    public static void configScheduleByProperties(Project project, PropertiesDetail propertiesDetail) {
+        ScheduleService scheduleService = ScheduleService.getInstance();
+        if (propertiesDetail == null) {
+            return;
+        }
+        if (!propertiesDetail.isSchedulePushSwitch()) {
+            LOG.info("schedulePushSwitch not open,schedule cancel...");
+            return;
+        }
+        if (StringUtils.isBlank(propertiesDetail.getExportDirs())) {
+            LOG.info("exportDirs not config,schedule cancel...");
+            return;
+        }
+        if (!TimestampUtil.isTimestamp(propertiesDetail.getFirstTime()) || !NumberUtils.isDigits(propertiesDetail.getIntervalTime())) {
+            LOG.info("firstTime or intervalTime is invalid,schedule cancel...");
+            return;
+        }
+        long firstTime = Long.parseLong(propertiesDetail.getFirstTime());
+        long intervalTime = Long.parseLong(propertiesDetail.getIntervalTime());
+        long delayTime = TimestampUtil.calcRecentlyDelayTime(firstTime, intervalTime);
+        scheduleService.scheduleAtFixedRate(() -> {
+            String[] split = propertiesDetail.getExportDirs().trim().split(",");
+            for (String s : split) {
+                YapiExporter.export(project, s);
+            }
+        }, delayTime, intervalTime, TimeUnit.MILLISECONDS);
+        LOG.info("schedule config.....delayTime: " + delayTime + ",intervalTime:" + intervalTime);
+        NotificationUtil.notifyInfo("AutoYapi", "定时导出将在" + delayTime + "ms 后开始执行," + intervalTime + "ms 执行一次");
+    }
 }
