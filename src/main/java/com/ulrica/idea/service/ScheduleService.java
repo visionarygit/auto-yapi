@@ -8,6 +8,7 @@ import com.intellij.openapi.startup.StartupActivity;
 import com.ulrica.idea.extensions.GitPrePushHandler;
 import com.ulrica.idea.listener.MyFileAlterationMonitor;
 import com.ulrica.idea.listener.MyFileListenerAdaptor;
+import com.ulrica.idea.persistent.SettingPersistent;
 import com.ulrica.idea.utils.ScheduleUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +29,7 @@ import java.util.concurrent.TimeUnit;
  **/
 public class ScheduleService implements Disposable, StartupActivity.Background {
 
-    public static boolean if_idea_has_config;
+    public static boolean ifIdeaHasConfig;
     private static final Logger LOG = Logger.getInstance(GitPrePushHandler.class);
 
     private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(5);
@@ -61,7 +62,12 @@ public class ScheduleService implements Disposable, StartupActivity.Background {
 
     @Override
     public void runActivity(@NotNull Project project) {
-        if (if_idea_has_config) {
+        doConfigSchedule(project);
+    }
+
+    private void doConfigSchedule(Project project) {
+        SettingPersistent settingPersistent = SettingPersistent.getInstance(project);
+        if (settingPersistent.schedulePushSwitch) {
             ScheduleUtil.configSchedule(project);
         } else {
             MyFileAlterationMonitor monitor = new MyFileAlterationMonitor(
@@ -71,4 +77,5 @@ public class ScheduleService implements Disposable, StartupActivity.Background {
             monitor.start();
         }
     }
+
 }

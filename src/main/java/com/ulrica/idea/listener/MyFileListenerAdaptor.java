@@ -17,7 +17,7 @@ public class MyFileListenerAdaptor extends FileAlterationListenerAdaptor {
     @Override
     public void onFileChange(File file) {
         LOG.info("监听到yapi配置文件变化！");
-        if(ScheduleService.if_idea_has_config){
+        if(ScheduleService.ifIdeaHasConfig){
             return;
         }
         super.onFileChange(file);
