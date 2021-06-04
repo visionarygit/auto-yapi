@@ -1,11 +1,20 @@
 package com.ulrica.idea.listener;
 
+import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
+import com.ulrica.idea.configurable.PropertiesConfigurable;
+import com.ulrica.idea.configurable.PropertiesDetail;
+import com.ulrica.idea.extensions.GitPrePushHandler;
+import com.ulrica.idea.utils.ProjectUtil;
+import com.ulrica.idea.utils.ScheduleUtil;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
 import org.apache.commons.io.monitor.FileAlterationMonitor;
 import org.apache.commons.io.monitor.FileAlterationObserver;
 
 public class MyFileAlterationMonitor {
+
+    private static final Logger LOG = Logger.getInstance(MyFileAlterationMonitor.class);
 
     private String path;        // 文件夹目录
 
@@ -28,6 +37,13 @@ public class MyFileAlterationMonitor {
      * 开启监听
      */
     public void start() {
+        Project currentProject = ProjectUtil.getCurrentProject();
+        PropertiesDetail propertiesDetail = PropertiesConfigurable.readProperties(currentProject);
+        if (propertiesDetail != null && propertiesDetail.isSchedulePushSwitch()) {
+            LOG.info("开始从配置文件中读取定时导出yapi任务配置");
+            //配置定时推送任务
+            ScheduleUtil.configScheduleByProperties(currentProject, propertiesDetail);
+        }
         if (path == null) {
             throw new IllegalStateException("Listen path must not be null");
         }

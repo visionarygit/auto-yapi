@@ -1,5 +1,9 @@
 package com.ulrica.idea.configurable;
 
+
+import com.intellij.openapi.project.Project;
+import com.ulrica.idea.utils.ProjectUtil;
+
 public class PropertiesDetail {
     private String listenDirs;
     private String exportDirs;
@@ -9,7 +13,9 @@ public class PropertiesDetail {
     private String intervalTime;
 
     public String getListenDirs() {
-        return listenDirs;
+        Project currentProject = ProjectUtil.getCurrentProject();
+        String basePath = currentProject.getBasePath();
+        return basePath + "/" + listenDirs;
     }
 
     public void setListenDirs(String listenDirs) {
@@ -17,7 +23,9 @@ public class PropertiesDetail {
     }
 
     public String getExportDirs() {
-        return exportDirs;
+        Project currentProject = ProjectUtil.getCurrentProject();
+        String basePath = currentProject.getBasePath();
+        return basePath + "/" + exportDirs;
     }
 
     public void setExportDirs(String exportDirs) {
