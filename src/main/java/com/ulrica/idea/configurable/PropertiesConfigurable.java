@@ -2,10 +2,10 @@ package com.ulrica.idea.configurable;
 
 import com.esotericsoftware.minlog.Log;
 import com.intellij.openapi.project.Project;
+import com.ulrica.idea.listener.MyFileAlterationMonitor;
+import com.ulrica.idea.listener.MyFileListenerAdaptor;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.Properties;
 
 public class PropertiesConfigurable {
@@ -33,6 +33,10 @@ public class PropertiesConfigurable {
             }
 
         }
+    }
+
+    public static void changeFile(Project project) {
+        MyFileAlterationMonitor.listener.onFileChange(new File(project.getBasePath() + "/.yapi.config"));
     }
 
     public static PropertiesDetail readPropertiesByAbsolutePath(String basePath) {

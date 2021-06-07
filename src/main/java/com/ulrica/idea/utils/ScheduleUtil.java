@@ -47,7 +47,7 @@ public class ScheduleUtil {
 		long intervalTime = Long.parseLong(settingPersistent.intervalTime);
 		long delayTime = TimestampUtil.calcRecentlyDelayTime(firstTime, intervalTime);
 		scheduleService.scheduleAtFixedRate(() -> {
-			String[] split = settingPersistent.exportDirs.trim().split(",");
+			String[] split = settingPersistent.exportDirsAbsolute.trim().split(",");
 			for (String s : split) {
 				YapiExporter.export(project, s);
 			}
@@ -58,6 +58,7 @@ public class ScheduleUtil {
 
     public static void configScheduleByProperties(Project project, PropertiesDetail propertiesDetail) {
         ScheduleService scheduleService = ScheduleService.getInstance();
+        scheduleService.clearSchedule();
         if (propertiesDetail == null) {
             return;
         }
