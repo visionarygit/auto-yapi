@@ -28,6 +28,8 @@ public class SettingPersistent implements PersistentStateComponent<SettingPersis
 	public boolean schedulePushSwitch = false;
 	public String firstTime = "-1";
 	public String intervalTime = "-1";
+    public String listenDirsAbsolute = "";
+    public String exportDirsAbsolute = "";
 
 
 	public static SettingPersistent getInstance(Project project) {

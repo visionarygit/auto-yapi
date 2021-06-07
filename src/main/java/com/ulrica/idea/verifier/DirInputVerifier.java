@@ -1,6 +1,8 @@
 package com.ulrica.idea.verifier;
 
+import com.intellij.openapi.project.Project;
 import com.ulrica.idea.utils.FileUtil;
+import com.ulrica.idea.utils.ProjectUtil;
 
 import javax.swing.text.JTextComponent;
 import java.util.stream.Stream;
@@ -15,13 +17,15 @@ import java.util.stream.Stream;
  **/
 public class DirInputVerifier extends AbstractJTextComponentInputVerifier {
 
-	@Override
-	public boolean verify(JTextComponent jTextComponent) {
-		String text = jTextComponent.getText();
-		if (text.contains(",")) {
-			String[] split = text.split(",");
-			return Stream.of(split).allMatch(FileUtil::dirExists);
-		}
-		return FileUtil.dirExists(text);
-	}
+    @Override
+    public boolean verify(JTextComponent jTextComponent) {
+        String text = jTextComponent.getText();
+        Project currentProject = ProjectUtil.getCurrentProject();
+        String basePath = currentProject.getBasePath();
+        if (text.contains(",")) {
+            String[] split = text.split(",");
+            return Stream.of(basePath + "/" + split).allMatch(FileUtil::dirExists);
+        }
+        return FileUtil.dirExists(basePath + "/" + text);
+    }
 }

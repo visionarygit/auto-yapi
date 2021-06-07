@@ -62,7 +62,11 @@ public class ScheduleService implements Disposable, StartupActivity.Background {
 
     @Override
     public void runActivity(@NotNull Project project) {
-        doConfigSchedule(project);
+        MyFileAlterationMonitor monitor = new MyFileAlterationMonitor(
+                project.getBasePath(),
+                ".yapi.config",
+                new MyFileListenerAdaptor());
+        monitor.start();
     }
 
     private void doConfigSchedule(Project project) {

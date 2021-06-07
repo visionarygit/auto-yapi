@@ -67,6 +67,8 @@ public class SettingConfigurable implements SearchableConfigurable {
         SettingPersistent settingPersistent = SettingPersistent.getInstance(currentProject);
         settingPersistent.listenDirs = settingGUI.getListenDirs();
         settingPersistent.exportDirs = settingGUI.getExportDirs();
+        settingPersistent.listenDirsAbsolute = settingGUI.getListenDirsAbsolute();
+        settingPersistent.exportDirsAbsolute = settingGUI.getListenDirsAbsolute();
         settingPersistent.schedulePushSwitch = settingGUI.getSchedulePushSwitch();
         settingPersistent.gitPushSwitch = settingGUI.getGitPushSwitch();
         settingPersistent.firstTime = settingGUI.getFirstTime();
@@ -74,8 +76,12 @@ public class SettingConfigurable implements SearchableConfigurable {
         //配置定时推送任务
         if (settingPersistent.schedulePushSwitch) {
             ScheduleService.ifIdeaHasConfig = true;
+            ScheduleUtil.configSchedule(currentProject);
+        }else {
+            //触发监听器
+            ScheduleService.ifIdeaHasConfig = false;
+            PropertiesConfigurable.changeFile(currentProject);
         }
-        ScheduleUtil.configSchedule(currentProject);
     }
 
     @Override
